@@ -55,24 +55,6 @@ jobs:
         run: |
           echo "SHA=$(cat /tmp/SHA/sha/sha.txt | tr -d '\n')" >> $GITHUB_ENV
 
-      - name: Push images
-        run: |
-          docker push ${{ env.REGISTRY_IMAGE }}:${{ env.SHA }}-linux-amd64
-
-      - name: Download Docker metadata
-        uses: actions/download-artifact@main
-        with:
-          path: /tmp/metadata
-          pattern: metadata
-          run-id: ${{ github.event.workflow_run.id }}
-          github-token: ${{ secrets.GH_PAT }}
-
-      - name: Read the metadata.json file
-        id: metadata_reader
-        uses: juliangruber/read-file-action@master
-        with:
-          path: /tmp/metadata/metadata/metadata.json
-
       - name: Download PR number
         uses: actions/download-artifact@main
         with:
@@ -84,11 +66,22 @@ jobs:
       - name: Read PR number
         shell: bash
         run: |
-          echo "PR_NUMBER=$(cat /tmp/pull_request_number/pull_request_number/pull_request_number.txt | tr -d '\n')" >> $GITHUB_ENV
+          PR_RAW=$(cat /tmp/pull_request_number/pull_request_number/pull_request_number.txt | tr -d '\n')
+          # Validate PR number is numeric only
+          if [[ "$PR_RAW" =~ ^[0-9]+$ ]]; then
+            echo "PR_NUMBER=$PR_RAW" >> $GITHUB_ENV
+            echo "Valid PR number: $PR_RAW"
+          else
+            echo "Invalid PR number format: $PR_RAW"
+            echo "PR number must contain only digits"
+            exit 1
+          fi
 
-      - name: Create manifest list and push
+      - name: Push images
+        shell: bash
         run: |
-          docker buildx imagetools create $(cat /tmp/metadata/metadata/metadata.json | jq -cr '.tags | map("-t " + .) | join(" ")') ${{ env.REGISTRY_IMAGE }}:${{ env.SHA }}-linux-amd64
+          echo "Pushing image: ${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}"
+          docker push "${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}"
 
       - name: Create comment
         uses: marocchino/sticky-pull-request-comment@main
