@@ -42,10 +42,7 @@ When running a production instance, I recommend that you use the [latest release
 
 ### 🐳 Docker
 
-There are a variety of image tags available:
-- `:2`: versions >= 2.0.0
-- `:2.1`: versions >= 2.1.0 and < 2.2.0
-- `:2.1.1`: an exact version specifier
+Image tags available:
 - `:latest`: whatever the latest version is
 
 (Replace empty config strings with correct values.)
