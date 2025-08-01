@@ -70,9 +70,9 @@ jobs:
           # Validate PR number is numeric only
           if [[ "$PR_RAW" =~ ^[0-9]+$ ]]; then
             echo "PR_NUMBER=$PR_RAW" >> $GITHUB_ENV
-            echo "✅ Valid PR number: $PR_RAW"
+            echo "Valid PR number: $PR_RAW"
           else
-            echo "❌ Invalid PR number format: $PR_RAW"
+            echo "Invalid PR number format: $PR_RAW"
             echo "PR number must contain only digits"
             exit 1
           fi
@@ -80,7 +80,7 @@ jobs:
       - name: Push images
         shell: bash
         run: |
-          echo "🚀 Pushing image: ${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}"
+          echo "Pushing image: ${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}"
           docker push "${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}"
 
       - name: Create comment
