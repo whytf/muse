@@ -69,8 +69,9 @@ jobs:
           echo "PR_NUMBER=$(cat /tmp/pull_request_number/pull_request_number/pull_request_number.txt | tr -d '\n')" >> $GITHUB_ENV
 
       - name: Push images
+        shell: bash
         run: |
-          docker push ${{ env.REGISTRY_IMAGE }}:pr-${{ env.PR_NUMBER }}
+          docker push ${{ env.REGISTRY_IMAGE }}:pr-$PR_NUMBER
 
       - name: Create comment
         uses: marocchino/sticky-pull-request-comment@main
