@@ -3522,6 +3522,11 @@ make-dir@^3.0.0, make-dir@^3.1.0:
   dependencies:
     semver "^6.0.0"
 
+make-dir@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/make-dir/-/make-dir-5.0.0.tgz#39b41251426eb8cff94de63bbef62e66ccbb538f"
+  integrity sha512-G0yBotnlWVonPClw+tq+xi4K7DZC9n96HjGTBDdHkstAVsDkfZhi1sTvZypXLpyQTbISBkDtK0E5XlUqDsShQg==
+
 math-intrinsics@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/math-intrinsics/-/math-intrinsics-1.1.0.tgz#a0dd74be81e2aa5c2f27e65ce283605ee4e2b7f9"
