@@ -9,7 +9,7 @@ import Config from './config.js';
 import KeyValueCacheProvider from './key-value-cache.js';
 import {ONE_HOUR_IN_SECONDS, ONE_MINUTE_IN_SECONDS} from '../utils/constants.js';
 import {parseTime} from '../utils/time.js';
-import getYouTubeID from 'get-youtube-id';
+import * as getYouTubeID from 'get-youtube-id';
 
 interface VideoDetailsResponse {
   id: string;
@@ -106,7 +106,7 @@ export default class {
   }
 
   async getVideo(url: string, shouldSplitChapters: boolean): Promise<SongMetadata[]> {
-    const result = await this.getVideosByID([String(getYouTubeID(url))]);
+    const result = await this.getVideosByID([String((getYouTubeID as (url: string) => string | null)(url))]);
     const video = result.at(0);
 
     if (!video) {
@@ -124,7 +124,7 @@ export default class {
       },
     };
     const {items: playlists} = await this.cache.wrap(
-      async () => this.got('playlists', playlistParams).json() as Promise<{items: PlaylistResponse[]}>,
+      async () => this.got('playlists', playlistParams).json<{items: PlaylistResponse[]}>(),
       playlistParams,
       {
         expiresIn: ONE_MINUTE_IN_SECONDS,
@@ -155,7 +155,7 @@ export default class {
 
       // eslint-disable-next-line no-await-in-loop
       const {items, nextPageToken} = await this.cache.wrap(
-        async () => this.got('playlistItems', playlistItemsParams).json() as Promise<PlaylistItemsResponse>,
+        async () => this.got('playlistItems', playlistItemsParams).json<PlaylistItemsResponse>(),
         playlistItemsParams,
         {
           expiresIn: ONE_MINUTE_IN_SECONDS,
@@ -291,7 +291,7 @@ export default class {
     };
 
     const {items: videos} = await this.cache.wrap(
-      async () => this.got('videos', p).json() as Promise<{items: VideoDetailsResponse[]}>,
+      async () => this.got('videos', p).json<{items: VideoDetailsResponse[]}>(),
       p,
       {
         expiresIn: ONE_HOUR_IN_SECONDS,
