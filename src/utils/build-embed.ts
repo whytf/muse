@@ -1,9 +1,9 @@
-import * as getYouTubeID from 'get-youtube-id';
 import {EmbedBuilder} from 'discord.js';
 import Player, {MediaSource, QueuedSong, STATUS} from '../services/player.js';
 import getProgressBar from './get-progress-bar.js';
 import {prettyTime} from './time.js';
 import {truncate} from './string.js';
+import {getYoutubeIdFromUrl} from './get-youtube-id-from-url.js';
 
 const getMaxSongTitleLength = (title: string) => {
   // eslint-disable-next-line no-control-regex
@@ -19,7 +19,7 @@ const getSongTitle = ({title, url, offset, source}: QueuedSong, shouldTruncate =
   const cleanSongTitle = title.replace(/\[.*\]/, '').trim();
 
   const songTitle = shouldTruncate ? truncate(cleanSongTitle, getMaxSongTitleLength(cleanSongTitle)) : cleanSongTitle;
-  const youtubeId = url.length === 11 ? url : (getYouTubeID as (url: string) => string | null)(url) ?? '';
+  const youtubeId = url.length === 11 ? url : getYoutubeIdFromUrl(url) ?? '';
 
   return `[${songTitle}](https://www.youtube.com/watch?v=${youtubeId}${offset === 0 ? '' : '&t=' + String(offset)})`;
 };
@@ -132,4 +132,3 @@ export const buildQueueEmbed = (player: Player, page: number, pageSize: number):
 
   return message;
 };
-
