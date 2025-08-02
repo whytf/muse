@@ -5,17 +5,14 @@ import parse from 'parse-duration';
  * @param str any common duration format, like 1m or 1hr 30s. If the input is a number it's assumed to be in seconds.
  * @returns seconds
  */
-const durationStringToSeconds = (str: string) => {
-  let seconds;
-  const isInputSeconds = Boolean(/\d+$/.exec(str));
+const durationStringToSeconds = (str: string): number => {
+  const isInputSeconds = /^\d+$/.test(str);
 
   if (isInputSeconds) {
-    seconds = Number.parseInt(str, 10);
-  } else {
-    seconds = parse(str) / 1000;
+    return Number.parseInt(str, 10);
   }
 
-  return seconds;
+  return (parse(str) ?? 0) / 1000;
 };
 
 export default durationStringToSeconds;
